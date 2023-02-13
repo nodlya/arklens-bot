@@ -3,7 +3,6 @@ const { Markup } = require('telegraf');
 require('dotenv').config();
 const { Keyboard, Key } = require('telegram-keyboard');
 const Telegraf = require('telegraf').Telegraf;
-//const token = "5720507035:AAHQtoE-K0mCbLwQdYicXAv05bgvKSAQjCc";
 const token = process.env.TOKEN;
 
 const bot = new Telegraf(token);

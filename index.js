@@ -1,16 +1,12 @@
-const { Sequelize, DataTypes, Model } = require('sequelize');
-const { Markup } = require('telegraf');
-require('dotenv').config();
-const { Keyboard, Key } = require('telegram-keyboard');
-const Telegraf = require('telegraf').Telegraf;
+import {User, Character, Audit, Equipment, Init, sequelize} from './tables_modules.js';
+import { Sequelize, DataTypes, Model } from 'sequelize';
+import { Markup, Telegraf } from 'telegraf';
+import dotenv from 'dotenv';
+dotenv.config();
+
 const token = process.env.TOKEN;
 
 const bot = new Telegraf(token);
-
-const sequelize = new Sequelize('', '', '', {
-    dialect: 'sqlite',
-    storage: './sequelize_db.sqlite'
-  });
 
 async function connect(){
 try {
@@ -23,87 +19,7 @@ try {
 
 connect();
 
-class User extends Model{};
-class Character extends Model{};
-class Equipment extends Model{};
-class Audit extends Model{};
-
-Character.init({
-  Id:{
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  Name:{
-    type: DataTypes.TEXT,
-    allowNull: false
-  },
-  Money: {
-    type: DataTypes.DOUBLE,
-    allowNull: false,
-    defaultValue: 0
-  }  
-}, {sequelize});
-
-User.init( {
-    ChatId:{ 
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        primaryKey: true
-    },
-    CharacterId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: Character,
-        key: 'Id'
-      }
-    }
-  }, {sequelize});
-
-Equipment.init({
-  Id:{
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    primaryKey: true
-  },
-  Value:{
-    type: DataTypes.DOUBLE,
-    defaultValue: 0
-  },
-  Owner:{
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: Character,
-      key: 'Id'
-    }
-  }
-},
-  {sequelize});
-
-Audit.init({
-  Id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  Type: {
-    type: DataTypes.TEXT
-  },
-  OwnerId:{
-    type: DataTypes.INTEGER,
-    references:{
-      model: Character,
-      key: 'Id'
-    }
-  },
-  Value:{
-    type: DataTypes.TEXT
-  }
-}, {sequelize})
-
+Init();
 
 async function forceSyncTables(){
   await sequelize.sync({force:true});
